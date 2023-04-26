@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bouncing Ball Game</title>
+  <style>
+    #canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bouncing Ball Game</h1>
+  <p>Click on the ball to score points!</p>
+  <canvas id="canvas"></canvas>
+  
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const ball = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      dx: 5,
+      dy: 5,
+      radius: 25,
+      color: "red"
+    };
+    let score = 0;
+    
+    canvas.addEventListener("click", function(event) {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+      const distance = Math.sqrt((ball.x - mouseX) ** 2 + (ball.y - mouseY) ** 2);
+      if (distance <= ball.radius) {
+        score++;
+        document.getElementById("score").textContent = `Score: ${score}`;
+      }
+    });
+    
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = ball.color;
+      ctx.fill();
+    }
+    
+    function updateBall() {
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+      if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+        ball.dx = -ball.dx;
+      }
+      if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+        ball.dy = -ball.dy;
+      }
+    }
+    
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBall();
+      updateBall();
+      requestAnimationFrame(draw);
+    }
+    
+    draw();
+  </script>
+  
+  <p id="score">Score: 0</p>
+</body>
+</html>
